@@ -1,0 +1,48 @@
+{% extends '/backend.html.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Nuev@ usuari@</h1>
+            <form class="card" method="post">
+                <div class="card-body">
+                    Nombre de usuario
+                    <input type="text" class="form-control" name="username">
+                    Nombre
+                    <input type="text" class="form-control" name="firstName">
+                    Apellidos
+                    <input type="text" class="form-control" name="lastName">
+                    Contraseña
+                    <input type="text" class="form-control" name="password">
+                    <div>
+                        <div>Roles</div>
+                        <ul>
+                            <li>
+                                Administrador
+                                <input type="checkbox" name="roles[]" value="ROLE_ADMIN">
+                            </li>
+                            <li>
+                                Encargado técnico
+                                <input type="checkbox" name="roles[]" value="ROLE_TECHNICIAN_SUPERVISOR">
+                            </li>
+                            <li>
+                                Técnico
+                                <input type="checkbox" name="roles[]" value="ROLE_TECHNICIAN">
+                            </li>
+                        </ul>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        Crear usuario
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block toolbar %}
+
+{% endblock %}
+

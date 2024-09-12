@@ -1,0 +1,40 @@
+{% extends '/backend.html.twig' %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Importar desde XGest</h2>
+        </div>
+        <div class="col-md-12">
+            <ImportFromXGest></ImportFromXGest>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+        {% block scripts %}
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    for (let row of document.querySelectorAll("tr")) {
+
+                        let id = row.getAttribute("data-id");
+                        for (let button of row.querySelectorAll(" button[type=button]")) {
+                            button.addEventListener("click", function () {
+                                let data = {
+                                    deliveryNoteId: row.querySelector("[name='import[" + id + "][identifier]']").value,
+                                    line: row.querySelector("[name='import[" + id + "][line]']").value,
+                                    technician: row.querySelector("[name='import[" + id + "][technician]']").value,
+                                    jobType: row.querySelector("[name='import[" + id + "][job]']").value,
+                                    priority: row.querySelector("[name='import[" + id + "][priority]']").value,
+                                }
+
+                                row.remove();
+                            })
+                        }
+                    }
+                });
+            </script>
+        {% endblock %}

@@ -1,0 +1,54 @@
+{% extends '/backend.html.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{{ user.firstName }} {{ user.lastName }}</h1>
+            <form class="card" method="post">
+                <div class="card-body">
+                    Nombre de usuario
+                    <input type="text" class="form-control" name="username" value="{{ user.username }}">
+                    Nombre
+                    <input type="text" class="form-control" name="firstName" value="{{ user.firstName }}">
+                    Apellidos
+                    <input type="text" class="form-control" name="lastName" value="{{ user.lastName }}">
+                    Contraseña
+                    <input type="text" class="form-control" name="password">
+                    <div>
+                        <div>Roles</div>
+                        <ul>
+                            <li>
+                                Administrador
+                                <input type="checkbox" name="roles[]" value="ROLE_ADMIN" {% if 'ROLE_ADMIN' in user.roles %} checked {% endif %}>
+                            </li>
+                            <li>
+                                Encargado técnico
+                                <input type="checkbox"
+                                       name="roles[]"
+                                       value="ROLE_TECHNICIAN_SUPERVISOR" {% if 'ROLE_TECHNICIAN_SUPERVISOR' in user.roles %} checked {% endif %}>
+                            </li>
+                            <li>
+                                Técnico
+                                <input type="checkbox" name="roles[]" value="ROLE_TECHNICIAN" {% if 'ROLE_TECHNICIAN' in user.roles %} checked {% endif %}>
+                            </li>
+                        </ul>
+
+                    </div>
+                    <div>
+                        Este usuario actúa como reserva de trabajos
+                        <input type="checkbox" name="isJobPool" {% if user.isJobPool == 1 %} checked {% endif %}>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        Guardar cambios
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block toolbar %}
+
+{% endblock %}
+

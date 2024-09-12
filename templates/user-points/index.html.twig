@@ -1,0 +1,60 @@
+{% extends '/backend.html.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Puntos</h2>
+        </div>
+    </div>
+    <form class="row" method="post">
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Técnico</label>
+
+                        {% if is_granted('ROLE_TECHNICIAN_SUPERVISOR') %}
+                            <select name="technician" class="form-control">
+                                {% for technician in technicians %}
+                                    <option value="{{ technician.id }}" {% if technicianId == technician.id %}selected{% endif %}>
+                                        {{ technician.firstName }} {{ technician.lastName }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+
+                            <select name="technician" class="form-control" readonly="readonly">
+                                {% for technician in technicians %}
+                                    <option value="{{ technician.id }}" {% if technicianId == technician.id %}selected{% endif %}>
+                                        {{ technician.firstName }} {{ technician.lastName }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Desde</label>
+                        <input type="date" name="fromDate" class="form-control" value="{{ fromDate }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Hasta</label>
+                        <input type="date" name="toDate" class="form-control" value="{{ toDate }}">
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%">Buscar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <user-points :points="{{ points | json_encode }}" :selected="{{ technicianId }}"></user-points>
+                </div>
+
+            </div>
+        </div>
+    </form>
+{% endblock %}
+

@@ -1,0 +1,7 @@
+{% extends '/backend.html.twig' %}
+{% block content %}
+    <Boxes></Boxes>
+{% endblock %}
+                                {% block toolbar %}
+                                    <a href="{{ path('app_traceability_import_from_xgest') }}" class="btn-primary btn">Importar desde XGest</a>
+                                {% endblock %}

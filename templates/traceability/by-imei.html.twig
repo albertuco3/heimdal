@@ -1,0 +1,201 @@
+{% extends '/backend.html.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Trazabilidad por IMEI</h2>
+        </div>
+    </div>
+    <form class="row" method="post">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">IMEI</label>
+                        <input type="text" name="serialNumber" class="form-control" value="{{ serialNumber }}">
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%">Buscar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            {% if serialNumber %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="m-0 p-0">{{ deliveryNoteId }}</h5>
+                        <small>{{ customer }}</small>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Descripción</label>
+                            <div class="col-sm-4 mb-3">
+                                <input type="text" class="form-control" readonly="readonly" value="{{ description }}">
+                            </div>
+                            <label class="col-sm-2 col-form-label">Código</label>
+                            <div class="col-sm-4 mb-3">
+                                <input type="text" class="form-control" readonly="readonly" value="{{ code }}">
+                            </div>
+                            {% if owner %}
+
+                                <label class="col-sm-2 col-form-label">Propietario</label>
+                                <div class="col-sm-4 mb-3">
+                                    <input type="text" class="form-control" readonly="readonly" value="{{ owner }}">
+                                </div>
+
+                            {% endif %}
+                            {% if receiver %}
+
+                                <label class="col-sm-2 col-form-label">Esperando aceptación de</label>
+                                <div class="col-sm-4  mb-3">
+                                    <input type="text" class="form-control" readonly="readonly" value="{{ owner }}">
+                                </div>
+
+                            {% endif %}
+                            {% if job %}
+
+                                <label class="col-sm-2 col-form-label">Tarea</label>
+                                <div class="col-sm-4  mb-3">
+                                    <input type="text" class="form-control" readonly="readonly" value="{{ job }}">
+                                </div>
+
+                            {% endif %}
+                        </div>
+
+                    </div>
+                    {% if articleUpdates is not null %}
+                        <table class="table table-compact">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for movement in articleUpdates %}
+                                    <tr>
+                                        <td>{{ movement.date | date("Y-m-d H:i:s") }}</td>
+                                        <td>
+                                            {% if (movement.newOwner is not null and movement.oldOwner is null) %}
+                                                <div class="row">
+                                                    <div class="col-xl-3">
+                                                        <b>Importación</b>
+                                                    </div>
+                                                    <div class="col-xl-9">
+
+                                                    </div>
+
+                                                </div>
+                                            {% endif %}
+                                            {% if (movement.newReceiver is not null) %}
+                                                <div class="row">
+                                                    <div class="col-xl-3">
+                                                        <b>Propuesta de transferencia</b>
+                                                    </div>
+                                                    <div class="col-xl-9">
+                                                        <div class="row">
+                                                            <div class="col-xl-5" style="text-align: right">
+                                                                {% if movement.oldOwner is not null %}
+                                                                    <span>{{ movement.oldOwner.fullName }}</span>
+                                                                {% else %}
+                                                                    <span>Ninguno</span>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="col-xl-2" style="text-align: center">
+                                                                <i class="fa fa-arrow-right"></i>
+                                                            </div>
+                                                            <div class="col-xl-5">
+                                                                {% if movement.newReceiver is not null %}
+                                                                    <span>{{ movement.newReceiver.fullName }}</span>
+                                                                {% else %}
+                                                                    <span>Ninguno</span>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            {% elseif (movement.newOwner is not null and movement.oldOwner is not null) %}
+                                                <div class="row">
+                                                    <div class="col-xl-3">
+                                                        <b>Transferencia aceptada </b>
+                                                    </div>
+                                                    <div class="col-xl-9">
+                                                        <div class="row">
+                                                            <div class="col-xl-5" style="text-align: right">
+                                                                {% if movement.oldOwner is not null %}
+                                                                    <span>{{ movement.oldOwner.fullName }}</span>
+                                                                {% else %}
+                                                                    <span>Ninguno</span>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="col-xl-2" style="text-align: center">
+                                                                <i class="fa fa-arrow-right"></i>
+                                                            </div>
+                                                            <div class="col-xl-5">
+                                                                {% if movement.newOwner is not null %}
+                                                                    <span>{{ movement.newOwner.fullName }}</span>
+                                                                {% else %}
+                                                                    <span>Ninguno</span>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            {% endif %}
+
+                                            {% if (movement.newJobType is not null or movement.oldJobType is not null) and movement.newJobType is not same as movement.oldJobType %}
+                                                <div class="row">
+                                                    <div class="col-xl-3">
+                                                        <b>{% if(movement.newJobType.finishes) %}
+                                                                Tarea completada
+                                                            {% else %}
+                                                                Tarea actualizada
+                                                            {% endif %}</b>
+                                                    </div>
+                                                    <div class="col-xl-9">
+                                                        <div class="row">
+                                                            <div class="col-xl-5" style="text-align: right">
+                                                                {% if movement.oldJobType is not null %}
+                                                                    <span>{{ movement.oldJobType.description }}</span>
+                                                                {% else %}
+                                                                    <span>Ninguna</span>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="col-xl-2" style="text-align: center">
+                                                                <i class="fa fa-arrow-right"></i>
+                                                            </div>
+                                                            <div class="col-xl-5">
+                                                                {% if movement.newJobType is not null %}
+                                                                    <span>{{ movement.newJobType.description }}</span>
+                                                                {% else %}
+                                                                    <span>Ninguna</span>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+
+                </div>
+            {% endif %}
+        </div>
+    </form>
+{% endblock %}
+
+{% block toolbar %}
+
+{% endblock %}
+

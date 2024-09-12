@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="fbb83227-7ddf-4418-9579-0b597ff07f6c" name="acelserver-01.ddns.net" url="https://192.168.1.20:7136">
+        <fileTransfer accessType="FTPS" host="192.168.1.20" port="7137">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

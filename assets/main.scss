@@ -1,0 +1,24 @@
+@use 'vuetify';
+
+table.table-compact {
+  tbody {
+    font-size: 12px;
+  }
+
+  th, td {
+    padding: 3px 8px;
+  }
+
+
+  small {
+    font-size: 9px;
+  }
+
+  .form-control {
+    padding: 2px 5px 1px;
+  }
+}
+
+.v-cloak, [name=v-cloak] {
+  display: none;
+}

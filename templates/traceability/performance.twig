@@ -1,0 +1,186 @@
+{% extends '/backend.html.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Rendimiento</h2>
+        </div>
+    </div>
+    <form class="row" method="post">
+        <div class="col-md-3">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Técnico</label>
+
+                        {% if is_granted('ROLE_TECHNICIAN_SUPERVISOR') %}
+                            <select name="technician" class="form-control">
+                                {% for technician in technicians %}
+                                    <option value="{{ technician.id }}" {% if technicianId == technician.id %}selected{% endif %}>
+                                        {{ technician.firstName }} {{ technician.lastName }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+
+                            <select name="technician" class="form-control" readonly="readonly">
+                                {% for technician in technicians %}
+                                    <option value="{{ technician.id }}" {% if technicianId == technician.id %}selected{% endif %}>
+                                        {{ technician.firstName }} {{ technician.lastName }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Desde</label>
+                        <input type="date" name="fromDate" class="form-control" value="{{ fromDate }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Hasta</label>
+                        <input type="date" name="toDate" class="form-control" value="{{ toDate }}">
+                    </div>
+                    <div style="display: flex;flex-direction: column;gap: 10px">
+                        <button type="submit" class="btn btn-primary" style="width: 100%" formaction="{{ path('app_traceability_performance') }}">Buscar</button>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%" formaction="{{ path('app_traceability_performance_excel') }}">Descargar Excel</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-header">Medias de tiempo por tarea global</div>
+                <div class="card-body">
+                    <table class="table table-compact">
+
+                        {% for job,average in averages %}
+                            <tr>
+                                <th>{{ job }}</th>
+                                <td style="text-align: right">{{ average }}</td>
+                            </tr>
+
+                        {% endfor %}
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card" style="overflow-x: scroll;">
+                <table class="table table-compact">
+                    <thead>
+                    <tr>
+                        <th style="min-width: 150px">
+                            Día
+                        </th>
+                        <th style="min-width: 100px">
+                            Total
+                        </th>
+                        <th style="min-width: 100px">
+                            Manuales
+                        </th>
+                        {% for job in jobs %}
+
+                            <th style="min-width: 100px">
+                                {{ job.description }}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for day,jobData in performance %}
+
+                        <tr>
+                            <th>
+                                {{ day }}
+                            </th>
+
+                            <td>
+                                <div class="d-flex justify-content-between">
+                                    <span>Puntos: </span><b>{{ jobData["total"]['points'] }}</b>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Dedicación: </span><b>
+                                        <timespan :seconds="{{ jobData["total"]['time'] }}"></timespan>
+                                    </b>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Media: </span><b>
+                                        <timespan :seconds="{{ jobData["total"]['averageTime'] }}"></timespan>
+                                    </b>
+                                </div>
+                            </td>
+
+                            <td>
+
+                                <div class="d-flex justify-content-between">
+                                    <span>Puntos: </span>
+                                    {% if jobData["manual"] is defined %}
+                                        <b>{{ jobData["manual"]['points'] }}</b>
+                                    {% else %}
+                                        <b>0</b>
+                                    {% endif %}
+                                </div>
+
+                            </td>
+
+                            {% for job in jobs %}
+
+                                <td>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Puntos:</span>
+                                        {% if jobData[job.id] is defined %}
+                                            <b>{{ jobData[job.id]['points'] }}</b>
+                                        {% else %}
+                                            <b>0</b>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Dedicación:</span>
+                                        {% if jobData[job.id] is defined %}
+                                            <b>
+                                                <timespan :seconds="{{ jobData[job.id]['time'] }}"></timespan>
+                                            </b>
+                                        {% else %}
+                                            <b>0</b>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Media:</span>
+                                        {% if jobData[job.id] is defined %}
+                                            <b>
+                                                <timespan :seconds="{{ jobData[job.id]['averageTime'] }}"></timespan>
+                                            </b>
+                                        {% else %}
+                                            <b>0</b>
+                                        {% endif %}
+                                    </div>
+                                    {% if jobData[job.id] is defined and jobData[job.id]['done'] is defined %}
+                                    <div class="d-flex justify-content-between">
+                                        <span>Completados:</span>
+
+                                            <b>
+                                                {{ jobData[job.id]['done'] }}
+                                            </b>
+
+
+                                    </div>
+                                    {% endif %}
+                                </td>
+
+                            {% endfor %}
+
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block toolbar %}
+
+{% endblock %}
+
